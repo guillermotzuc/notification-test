@@ -5,6 +5,7 @@ HELP.md
 
 # Target folder
 target/
+.clj-kondo/
 
 # Maven wrapper jar
 .mvn/
