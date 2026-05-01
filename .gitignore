@@ -6,6 +6,7 @@ HELP.md
 # Target folder
 target/
 .clj-kondo/
+.lsp/
 
 # Maven wrapper jar
 .mvn/
