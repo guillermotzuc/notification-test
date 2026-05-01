@@ -1,1 +1,0 @@
-["^ ","~$average",["^ ","~:row",6,"~:col",1,"~:fixed-arities",["~#set",[2]],"~:name","^0","~:ns","~$hello-world.core","~:top-ns","^7","~:arities",["^ ","~i2",["^ ","~:ret","~:number","~:arglist-str","[a b]"]],"~:type","~:fn"],"~:filename","/home/gtzuc/Documents/code/workspaces/notification-test/hello-world/out/hello_world/core.cljs"]
