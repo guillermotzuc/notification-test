@@ -10,7 +10,8 @@ INSERT INTO topics (name) VALUES
 ('Technology');
 
 -- Insert default notification channels
+-- Insert default notification channels
 INSERT INTO notification_channel (name) VALUES
 ('SMS'),
-('E-Mail'),
-('Push Notification');
+('EMAIL'),
+('PUSH');
