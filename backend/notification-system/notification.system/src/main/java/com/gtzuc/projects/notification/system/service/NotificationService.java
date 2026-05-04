@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,21 +45,20 @@ public class NotificationService {
     @Transactional
     public void createNotification(MessageRequestDTO requestDTO) {
 
-        // Validate if user exists
-        Optional<User> user = userRepository.findById(requestDTO.getUserId());
-        if (user.isEmpty()) {
-            throw new RuntimeException("User not found with id: " + requestDTO.getUserId());
-        }
-
-        if (user.get().getChannels() == null || user.get().getChannels().isEmpty()) {
-            throw new RuntimeException("The user is not subscribe to any notification channel");
-        }
+        User user = this.getValidUser(requestDTO.getUserId());
 
         // Handle Topic: Find existing or create new
         Topic topic = getOrCreateTopic(requestDTO.getTopicName());
 
+        // Validate if the user has a subscription to the topic
+        String userTopics = user.getTopics();
+        List<String> topicList = Arrays.asList(userTopics.split(","));
+        if (!topicList.contains(topic.getName())) {
+            throw new RuntimeException("User has not subscription to topic: " + requestDTO.getTopicName());
+        }
+
         // Create a message for each channel
-        String[] channels = user.get().getChannels().split(",");
+        String[] channels = user.getChannels().split(",");
         for (String channelName : channels) {
 
             // Get or validate Notification Channel
@@ -74,8 +74,8 @@ public class NotificationService {
             message.setTimestamp(LocalDateTime.now());
 
             // Send the notification
-            Notification notification = factory.getChannel(user.get(), channel.getName());
-            notification.sendNotification(user.get(), message);
+            Notification notification = factory.getChannel(user, channel.getName());
+            notification.sendNotification(user, message);
 
             messageRepository.save(message);
         }
@@ -103,6 +103,30 @@ public class NotificationService {
      */
     public List<NotificationLog> getMessagesByUserId(Long userId) {
 
-        return notificationLogRepository.findByUserId(userId);
+        // Validate if user exists
+        User user = this.getValidUser(userId);
+        String userTopics = user.getTopics();
+        List<String> topicList = Arrays.asList(userTopics.split(","));
+        return notificationLogRepository.findByUserIdAndTopics(userId, topicList);
+    }
+
+    /**
+     *  Validate if the user exists and contains topics
+     * @param userId
+     * @return User
+     */
+    private User getValidUser(Long userId) {
+
+        // Validate if user exists
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
+
+        if (user.get().getChannels() == null || user.get().getChannels().isEmpty()) {
+            throw new RuntimeException("The user is not subscribe to any notification channel");
+        }
+
+        return user.get();
     }
 }
