@@ -1,9 +1,8 @@
 package com.gtzuc.projects.notification.system.model.dto;
 
-import com.gtzuc.projects.notification.system.model.Channels;
-import lombok.Data;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 @Data
 public class MessageRequestDTO {
