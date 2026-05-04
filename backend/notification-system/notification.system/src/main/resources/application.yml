@@ -12,9 +12,8 @@ spring:
       ddl-auto: update
     show-sql: true
 server:
-  port: 8081
-#  servlet:
-#    context-path: /notification-system
+  port: ${PORT:8081}
+
 eureka:
   client:
     service-url:

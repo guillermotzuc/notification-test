@@ -13,12 +13,6 @@ public interface NotificationLogRepository extends JpaRepository<NotificationLog
 
     List<NotificationLog> findByUserId(Long userId);
 
-    @Query("SELECT u FROM NotificationLog u WHERE u.userId = :userId AND u.topicName = :topicName AND u.channelName = :channelName")
-    List<NotificationLog> findByUserTopicAndChannel(@Param("userId") Long userId,
-                                                           @Param("topicName") String topicName,
-                                                           @Param("channelName") String channelName);
-
-    @Query("SELECT u FROM NotificationLog u WHERE u.userId = :userId AND u.topicName = :topicName")
-    List<NotificationLog> findByUserTopic(@Param("userId") Long userId,
-                                                    @Param("topicName") String topicName);
+    @Query("SELECT n FROM NotificationLog n WHERE n.userId = :userId AND n.topicName IN (:topics)")
+    List<NotificationLog> findByUserIdAndTopics(@Param("userId") Long userId, @Param("topics") List<String> topics);
 }
