@@ -1,0 +1,26 @@
+[
+  {
+    "ID": "1001",
+    "Name": "Alice Johnson",
+    "Email": "alice.johnson@example.com",
+    "Phone number": "+1-555-123-4567",
+    "Subscribed": ["Sports", "Technology", "Health"],
+    "Channels": ["SMS", "E-Mail", "Push Notification"]
+  },
+  {
+    "ID": "1002",
+    "Name": "Brian Smith",
+    "Email": "brian.smith@example.com",
+    "Phone number": "+44-7700-123456",
+    "Subscribed": ["Finance", "News"],
+    "Channels": ["E-Mail", "Push Notification"]
+  },
+  {
+    "ID": "1003",
+    "Name": "Clara Wong",
+    "Email": "clara.wong@example.com",
+    "Phone number": "+61-412-345-678",
+    "Subscribed": ["Entertainment", "Fashion", "Travel", "Food"],
+    "Channels": ["SMS", "E-Mail"]
+  }
+]
