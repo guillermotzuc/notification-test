@@ -1,19 +1,18 @@
 package com.gtzuc.projects.notification.system.service;
 
+import com.gtzuc.projects.notification.system.model.Channels;
 import com.gtzuc.projects.notification.system.model.dto.MessageRequestDTO;
-import com.gtzuc.projects.notification.system.model.entities.Message;
-import com.gtzuc.projects.notification.system.model.entities.NotificationChannel;
-import com.gtzuc.projects.notification.system.model.entities.Topic;
-import com.gtzuc.projects.notification.system.repositories.MessageRepository;
-import com.gtzuc.projects.notification.system.repositories.NotificationChannelRepository;
-import com.gtzuc.projects.notification.system.repositories.TopicRepository;
-import com.gtzuc.projects.notification.system.repositories.UserRepository;
+import com.gtzuc.projects.notification.system.model.entities.*;
+import com.gtzuc.projects.notification.system.repositories.*;
+import com.gtzuc.projects.notification.system.service.channels.Notification;
+import com.gtzuc.projects.notification.system.service.channels.NotificationFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificationService {
@@ -28,7 +27,13 @@ public class NotificationService {
     private NotificationChannelRepository channelRepository;
 
     @Autowired
-    private UserRepository userRepository; // Assuming you have this
+    private UserRepository userRepository;
+
+    @Autowired
+    private NotificationFactory factory;
+
+    @Autowired
+    private NotificationLogRepository notificationLogRepository;
 
     /**
      * Creates a message with validation.
@@ -39,27 +44,41 @@ public class NotificationService {
     @Transactional
     public void createNotification(MessageRequestDTO requestDTO) {
 
-        // 1. Validate if user exists
-        if (!userRepository.existsById(requestDTO.getUserId())) {
+        // Validate if user exists
+        Optional<User> user = userRepository.findById(requestDTO.getUserId());
+        if (user.isEmpty()) {
             throw new RuntimeException("User not found with id: " + requestDTO.getUserId());
         }
 
-        // 2. Handle Topic: Find existing or create new
+        if (user.get().getChannels() == null || user.get().getChannels().isEmpty()) {
+            throw new RuntimeException("The user is not subscribe to any notification channel");
+        }
+
+        // Handle Topic: Find existing or create new
         Topic topic = getOrCreateTopic(requestDTO.getTopicName());
 
-        // 3. Get or validate Notification Channel
-        NotificationChannel channel = channelRepository.findByName(requestDTO.getChannelName())
-                .orElseThrow(() -> new RuntimeException("Channel not found: " + requestDTO.getChannelName()));
+        // Create a message for each channel
+        String[] channels = user.get().getChannels().split(",");
+        for (String channelName : channels) {
 
-        // 4. Create and save the message
-        Message message = new Message();
-        message.setUserId(requestDTO.getUserId());
-        message.setTopic(topic);
-        message.setChannel(channel);
-        message.setMessage(requestDTO.getMessageContent());
-        message.setTimestamp(LocalDateTime.now());
+            // Get or validate Notification Channel
+            NotificationChannel channel = channelRepository.findByName(Channels.valueOf(channelName))
+                    .orElseThrow(() -> new RuntimeException("Channel not found: " + channelName));
 
-        messageRepository.save(message);
+            // Create the message
+            Message message = new Message();
+            message.setUserId(requestDTO.getUserId());
+            message.setTopic(topic);
+            message.setChannel(channel);
+            message.setMessage(requestDTO.getMessageContent());
+            message.setTimestamp(LocalDateTime.now());
+
+            // Send the notification
+            Notification notification = factory.getChannel(user.get(), channel.getName());
+            notification.sendNotification(user.get(), message);
+
+            messageRepository.save(message);
+        }
     }
 
     /**
@@ -77,8 +96,13 @@ public class NotificationService {
                 });
     }
 
-    public List<Message> getMessagesByUserId(Long userId) {
+    /**
+     * Return messages by user
+     * @param userId
+     * @return
+     */
+    public List<NotificationLog> getMessagesByUserId(Long userId) {
 
-        return messageRepository.findByUserId(userId);
+        return notificationLogRepository.findByUserId(userId);
     }
 }

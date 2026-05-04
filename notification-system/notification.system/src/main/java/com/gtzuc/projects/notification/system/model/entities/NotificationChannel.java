@@ -1,5 +1,6 @@
 package com.gtzuc.projects.notification.system.model.entities;
 
+import com.gtzuc.projects.notification.system.model.Channels;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,7 +13,8 @@ public class NotificationChannel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true, length = 100)
-    private String name;
+    private Channels name;
 
 }

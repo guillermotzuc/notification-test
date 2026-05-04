@@ -37,3 +37,24 @@ CREATE INDEX idx_message_user_id ON message(user_id);
 CREATE INDEX idx_message_topic_id ON message(topic_id);
 CREATE INDEX idx_message_channel_id ON message(channel_id);
 CREATE INDEX idx_message_timestamp ON message(timestamp);
+
+CREATE OR REPLACE VIEW notification_log AS
+SELECT 
+    u.id AS user_id,
+    u.name AS user_name,
+    u.email AS user_email,
+    u.phone_number AS user_phone,
+    t.id AS topic_id,
+    t.name AS topic_name,
+    nc.id AS channel_id,
+    nc.name AS channel_name,
+    m.message,
+    m.timestamp AS message_timestamp,
+    TO_CHAR(m.timestamp, 'YYYY-MM-DD HH24:MI:SS') AS formatted_timestamp
+FROM 
+    users u
+    INNER JOIN message m ON u.id = m.user_id
+    INNER JOIN topics t ON m.topic_id = t.id
+    INNER JOIN notification_channel nc ON m.channel_id = nc.id
+ORDER BY 
+    m.timestamp DESC;
