@@ -126,5 +126,14 @@ http://localhost:3000
 
 Make sure Node.js and npm are installed.
 
+---
+
+## Database Initialization
+
+To initialize the database, run the following command inside the `db` directory:
+
+```bash
+docker-compose up -d
+
 
 
