@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Notification System</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="notification-app.js" defer></script>
+</head>
+<body>
+<div class="dashboard">
+    <!-- SECTION 1: VIEWER CARD (pull logs from API) -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Notification Logs</h2>
+            <div class="flex-between" style="gap: 12px;">
+                <div class="badge" id="userIdBadge">User: —</div>
+                <button id="refreshLogsBtn" class="btn-secondary" style="background: white;">🔄 Refresh</button>
+            </div>
+        </div>
+        <div class="logs-container">
+            <div class="input-group" style="margin-bottom: 20px;">
+                <label style="margin-top: 20px;"> Select User ID for logs</label>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <select id="userLogSelector" style="flex: 2; min-width: 180px;">
+                        <option value="1">Alice Johnson</option>
+                        <option value="2">Brian Smith</option>
+                        <option value="3">Clara Wong</option>
+                    </select>
+                    <button id="fetchLogsBtn"> Load messages</button>
+                </div>
+            </div>
+            <div id="logListContainer" class="log-list">
+                <div class="empty-logs"> Select a user and click "Load messages"</div>
+            </div>
+        </div>
+    </div>
+
+<!-- Create notification section -->
+    <div class="card" id="creatorCard">
+        <div class="card-header">
+            <h2>Create notification</h2>
+        </div>
+        <div class="form-grid">
+            <div class="input-group">
+                <label> User *</label>
+                <select id="createUserSelect">
+                    <option value="1">Alice Johnson</option>
+                    <option value="2">Brian Smith</option>
+                    <option value="3">Clara Wong</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label> Topic *</label>
+                <select id="createTopicSelect">
+                    <option value="Sports">Sports</option>
+                    <option value="Movies">Movies</option>
+                    <option value="Finance"> Finance</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label> Message text *</label>
+                <textarea id="createMessageText" placeholder="Describe the notification content..."></textarea>
+            </div>
+            <div class="flex-between" style="margin-top: 8px;">
+                <button id="submitNotificationBtn" style="background: #0f3b5c;">Send Notification</button>
+                <button id="clearFormBtn" type="button" class="btn-secondary">Clear form</button>
+            </div>
+            <div id="formStatusMsg" style="font-size: 0.8rem; border-radius: 40px; background:#f8fafc; padding: 8px 12px; color:#2c3e66;"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
