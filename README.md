@@ -1,1 +1,95 @@
 # notification-test
+<img width="569" height="318" alt="image" src="https://github.com/user-attachments/assets/5f8cfaef-1838-4741-944c-300e38793838" />
+
+## Notification Backend System
+
+Microservices-based backend architecture built with Java and Spring Boot using:
+
+- Service Discovery with Eureka
+- API Gateway for routing and load balancing
+- Scalable business logic services
+
+---
+
+## Services
+
+### 1. notification-discovery-server
+
+Eureka Discovery Server responsible for service registration and discovery.
+
+#### Responsibilities
+
+- Register microservices
+- Allow dynamic service discovery
+- Enable communication between services
+
+#### Eureka Dashboard
+
+```text
+http://localhost:8761
+```
+
+---
+
+### 2. notification-system
+
+Main business logic API.
+
+This service handles notification processing and can be scaled horizontally by running multiple instances on different ports.
+
+#### Responsibilities
+
+- Notification processing
+- Business rules
+- REST API endpoints
+
+#### Features
+
+- Registers automatically in Eureka
+- Supports horizontal scaling
+- Load balanced through API Gateway
+
+#### Example Instances
+
+```text
+http://localhost:8081
+http://localhost:8082
+http://localhost:8083
+```
+
+---
+
+### 3. api-gateway
+
+Central entry point for all client requests.
+
+#### Responsibilities
+
+- Route traffic to services
+- Load balancing
+- Centralized API access
+- Service discovery integration
+
+#### Features
+
+- Dynamic routing using Eureka
+- Automatic load balancing across instances
+- Single public endpoint
+
+#### Default Port
+
+```text
+8080
+```
+
+---
+
+## Startup Order
+
+Start the projects in the following order:
+
+1. `notification-discovery-server`
+2. `notification-system`
+3. `api-gateway`
+
+
